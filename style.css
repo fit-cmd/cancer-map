@@ -1,0 +1,54 @@
+/* General Body Style */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Map Container Style */
+#map {
+    height: 80vh;
+    width: 100%;
+}
+
+/* Filter and Search Container Style */
+#controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Filter Dropdown Style */
+#vulnerabilityFilter {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+/* Search Box Style */
+#searchBox {
+    padding: 5px;
+    width: 100%;
+}
+
+/* Pop-Up Style */
+.leaflet-popup-content-wrapper {
+    font-size: 14px;
+}
+
+.leaflet-popup-content {
+    color: #333;
+    line-height: 1.5;
+}
+
+/* Custom Marker Icon Style */
+.custom-icon {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}

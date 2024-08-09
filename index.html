@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Vulnerability Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        .filters, .search {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Cancer Vulnerability Map</h2>
+    <div class="filters">
+        <label for="vulnerabilityFilter">Filter by Vulnerability:</label>
+        <select id="vulnerabilityFilter">
+            <option value="all">All</option>
+            <option value="low">Low Vulnerability</option>
+            <option value="high">High Vulnerability</option>
+        </select>
+    </div>
+    <div class="search">
+        <label for="searchBox">Search Region:</label>
+        <input type="text" id="searchBox" placeholder="Enter region name">
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([-1.2921, 36.8219], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Sample GeoJSON data with 20 areas
+        var vulnerabilityData = {
+            "type": "FeatureCollection",
+            "features": [
+                // High Vulnerability Areas
+                { "type": "Feature", "properties": { "name": "Nairobi", "vulnerability_index": 0.8 }, "geometry": { "type": "Polygon", "coordinates": [[[36.8219, -1.2921], [36.8319, -1.2921], [36.8319, -1.2821], [36.8219, -1.2821], [36.8219, -1.2921]]] } },
+                { "type": "Feature", "properties": { "name": "Mombasa", "vulnerability_index": 0.7 }, "geometry": { "type": "Polygon", "coordinates": [[[39.6682, -4.0435], [39.6782, -4.0435], [39.6782, -4.0335], [39.6682, -4.0335], [39.6682, -4.0435]]] } },
+                { "type": "Feature", "properties": { "name": "Kisumu", "vulnerability_index": 0.6 }, "geometry": { "type": "Polygon", "coordinates": [[[34.7544, -0.0917], [34.7644, -0.0917], [34.7644, -0.0817], [34.7544, -0.0817], [34.7544, -0.0917]]] } },
+                { "type": "Feature", "properties": { "name": "Eldoret", "vulnerability_index": 0.5 }, "geometry": { "type": "Polygon", "coordinates": [[[35.2734, 0.5128], [35.2834, 0.5128], [35.2834, 0.5228], [35.2734, 0.5228], [35.2734, 0.5128]]] } },
+                { "type": "Feature", "properties": { "name": "Nakuru", "vulnerability_index": 0.4 }, "geometry": { "type": "Polygon", "coordinates": [[[35.7604, -0.3030], [35.7704, -0.3030], [35.7704, -0.2930], [35.7604, -0.2930], [35.7604, -0.3030]]] } },
+                { "type": "Feature", "properties": { "name": "Kakamega", "vulnerability_index": 0.7 }, "geometry": { "type": "Polygon", "coordinates": [[[34.7516, 0.3408], [34.7616, 0.3408], [34.7616, 0.3508], [34.7516, 0.3508], [34.7516, 0.3408]]] } },
+                { "type": "Feature", "properties": { "name": "Garissa", "vulnerability_index": 0.6 }, "geometry": { "type": "Polygon", "coordinates": [[[39.6605, -0.4560], [39.6705, -0.4560], [39.6705, -0.4460], [39.6605, -0.4460], [39.6605, -0.4560]]] } },
+                { "type": "Feature", "properties": { "name": "Isiolo", "vulnerability_index": 0.5 }, "geometry": { "type": "Polygon", "coordinates": [[[37.5912, 0.3590], [37.6012, 0.3590], [37.6012, 0.3690], [37.5912, 0.3690], [37.5912, 0.3590]]] } },
+                { "type": "Feature", "properties": { "name": "Thika", "vulnerability_index": 0.4 }, "geometry": { "type": "Polygon", "coordinates": [[[37.0620, -1.0380], [37.0720, -1.0380], [37.0720, -1.0280], [37.0620, -1.0280], [37.0620, -1.0380]]] } },
+                { "type": "Feature", "properties": { "name": "Kericho", "vulnerability_index": 0.3 }, "geometry": { "type": "Polygon", "coordinates": [[[35.3280, -0.3660], [35.3380, -0.3660], [35.3380, -0.3560], [35.3280, -0.3560], [35.3280, -0.3660]]] } },
+                { "type": "Feature", "properties": { "name": "Bomet", "vulnerability_index": 0.5 }, "geometry": { "type": "Polygon", "coordinates": [[[35.5725, -0.8012], [35.5825, -0.8012], [35.5825, -0.7912], [35.5725, -0.7912], [35.5725, -0.8012]]] } },
+                { "type": "Feature", "properties": { "name": "Lamu", "vulnerability_index": 0.4 }, "geometry": { "type": "Polygon", "coordinates": [[[40.9028, -2.2704], [40.9128, -2.2704], [40.9128, -2.2604], [40.9028, -2.2604], [40.9028, -2.2704]]] } },
+                { "type": "Feature", "properties": { "name": "Voi", "vulnerability_index": 0.3 }, "geometry": { "type": "Polygon", "coordinates": [[[38.5378, -3.3960], [38.5478, -3.3960], [38.5478, -3.3860], [38.5378, -3.3860], [38.5378, -3.3960]]] } },
+                { "type": "Feature", "properties": { "name": "Naivasha", "vulnerability_index": 0.6 }, "geometry": { "type": "Polygon", "coordinates": [[[36.4300, -0.7170], [36.4400, -0.7170], [36.4400, -0.7070], [36.4300, -0.7070], [36.4300, -0.7170]]] } },
+                { "type": "Feature", "properties": { "name": "Machakos", "vulnerability_index": 0.5 }, "geometry": { "type": "Polygon", "coordinates": [[[37.2780, -1.5130], [37.2880, -1.5130], [37.2880, -1.5030], [37.2780, -1.5030], [37.2780, -1.5130]]] } },
+                { "type": "Feature", "properties": { "name": "Embu", "vulnerability_index": 0.4 }, "geometry": { "type": "Polygon", "coordinates": [[[37.4541, -0.8380], [37.4641, -0.8380], [37.4641, -0.8280], [37.4541, -0.8280], [37.4541, -0.8380]]] } },
+                { "type": "Feature", "properties": { "name": "Murang'a", "vulnerability_index": 0.3 }, "geometry": { "type": "Polygon", "coordinates": [[[37.1314, -0.7580], [37.1414, -0.7580], [37.1414, -0.7480], [37.1314, -0.7480], [37.1314, -0.7580]]] } },
+                { "type": "Feature", "properties": { "name": "Uasin Gishu", "vulnerability_index": 0.4 }, "geometry": { "type": "Polygon", "coordinates": [[[35.2722, 0.5094], [35.2822, 0.5094], [35.2822, 0.5194], [35.2722, 0.5194], [35.2722, 0.5094]]] } },
+                { "type": "Feature", "properties": { "name": "Kwale", "vulnerability_index": 0.5 }, "geometry": { "type": "Polygon", "coordinates": [[[39.4755, -4.4200], [39.4855, -4.4200], [39.4855, -4.4100], [39.4755, -4.4100], [39.4755, -4.4200]]] } },
+                { "type": "Feature", "properties": { "name": "Taita Taveta", "vulnerability_index": 0.6 }, "geometry": { "type": "Polygon", "coordinates": [[[38.4316, -3.3580], [38.4416, -3.3580], [38.4416, -3.3480], [38.4316, -3.3480], [38.4316, -3.3580]]] } },
+                { "type": "Feature", "properties": { "name": "Nyeri", "vulnerability_index": 0.4 }, "geometry": { "type": "Polygon", "coordinates": [[[36.9491, -0.4234], [36.9591, -0.4234], [36.9591, -0.4134], [36.9491, -0.4134], [36.9491, -0.4234]]] } },
+                { "type": "Feature", "properties": { "name": "Kerugoya", "vulnerability_index": 0.5 }, "geometry": { "type": "Polygon", "coordinates": [[[37.3072, -0.4070], [37.3172, -0.4070], [37.3172, -0.3970], [37.3072, -0.3970], [37.3072, -0.4070]]] } },
+                { "type": "Feature", "properties": { "name": "Mwingi", "vulnerability_index": 0.6 }, "geometry": { "type": "Polygon", "coordinates": [[[38.0333, -1.4560], [38.0433, -1.4560], [38.0433, -1.4460], [38.0333, -1.4460], [38.0333, -1.4560]]] } },
+                { "type": "Feature", "properties": { "name": "Tana River", "vulnerability_index": 0.4 }, "geometry": { "type": "Polygon", "coordinates": [[[39.5288, -2.3712], [39.5388, -2.3712], [39.5388, -2.3612], [39.5288, -2.3612], [39.5288, -2.3712]]] } }
+            ]
+        };
+
+        function getColor(vulnerability) {
+            return vulnerability > 0.6 ? '#FF0000' : (vulnerability > 0.4 ? '#FFFF00' : '#00FF00');
+        }
+
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.vulnerability_index),
+                weight: 2,
+                opacity: 1,
+                color: 'black',
+                dashArray: '3',
+                fillOpacity: 0.7
+            };
+        }
+
+        function onEachFeature(feature, layer) {
+            var color = getColor(feature.properties.vulnerability_index);
+            layer.bindPopup('<strong>' + feature.properties.name + '</strong><br>Vulnerability Index: ' + feature.properties.vulnerability_index + '<br><div style="background-color:' + color + '; width: 50px; height: 50px; border: 1px solid black;"></div>');
+        }
+
+        function addLayer(data) {
+            L.geoJSON(data, { style: style, onEachFeature: onEachFeature }).addTo(map);
+        }
+
+        addLayer(vulnerabilityData);
+
+        // Filter functionality
+        document.getElementById('vulnerabilityFilter').addEventListener('change', function() {
+            var selected = this.value;
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.GeoJSON) {
+                    map.removeLayer(layer);
+                }
+            });
+            var filteredData = {
+                "type": "FeatureCollection",
+                "features": vulnerabilityData.features.filter(function(feature) {
+                    if (selected === 'all') return true;
+                    return selected === 'high' ? feature.properties.vulnerability_index > 0.6 : feature.properties.vulnerability_index <= 0.6;
+                })
+            };
+            addLayer(filteredData);
+        });
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', function() {
+            var searchTerm = this.value.toLowerCase();
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.GeoJSON) {
+                    map.removeLayer(layer);
+                }
+            });
+            var searchedData = {
+                "type": "FeatureCollection",
+                "features": vulnerabilityData.features.filter(function(feature) {
+                    return feature.properties.name.toLowerCase().includes(searchTerm);
+                })
+            };
+            addLayer(searchedData);
+        });
+    </script>
+</body>
+</html>
